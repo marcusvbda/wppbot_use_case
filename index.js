@@ -1,31 +1,26 @@
 
 (async () => {
-	const puppeteer = require('puppeteer')
-	const qrcode = require('qrcode-terminal')
-	const browser = await puppeteer.launch({
-		headless: true,
-		// slowMo: 250,
-		devtools: true,
-		// userDataDir : "\\session",
-		// args: ['--start-maximized']
-	})
-	const page = await browser.newPage()
-	await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36')
-	await page.setViewport({ width: 1000, height: 728 })
-	await page.goto('https://web.whatsapp.com/send?phone=+5514997569008&text=Oi gata, tudo bem ?')
+	let session_name = "3854361464b9a2c3832c47bd39cddf54"
+	const Client = require('./client')
 
-	await page.waitForSelector('[aria-label="Scan me!"]')
-	let qr_code_value = await page.evaluate(() => {
-		return document.querySelector('[aria-label="Scan me!"]').parentNode.getAttribute("data-ref")
-	})
-	qrcode.generate(qr_code_value, { small: true })
+	let client = await Client.initialize(session_name)
 
-	await page.waitForSelector('[data-testid="send"]')
-	await page.screenshot({ path: 'debug/2.png' })
-	await page.evaluate(() => {
-		document.querySelector('[data-testid="send"]').parentNode.click()
+	client.event.on("qr_code", code => {
+		const qrcode = require('qrcode-terminal')
+		console.log("Scan this qrcode")
+		qrcode.generate(code, { small: true })
+
 	})
-	await page.screenshot({ path: 'debug/3.png' })
-	console.log("Enviou")
-	await browser.close()
+
+	client.event.on("sent_message", message => {
+		console.log(message)
+	})
+
+	client.event.on("connected", () => {
+		console.log("connected")
+	})
+
+	// await client.authenticate()
+	// await client.sendMessage("+5514997569008", "mensagem de teste api wpp")
+	// await client.sendMessage("+5514996766177", "teste a1212")
 })()
