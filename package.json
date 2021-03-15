@@ -1,0 +1,27 @@
+{
+  "name": "wppbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcusvbda/wppbot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marcusvbda/wppbot/issues"
+  },
+  "homepage": "https://github.com/marcusvbda/wppbot#readme",
+  "description": "",
+  "dependencies": {
+    "install": "^0.13.0",
+    "npm": "^7.6.3",
+    "puppeteer": "^8.0.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
