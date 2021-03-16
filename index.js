@@ -1,26 +1,26 @@
+const qrcode = require('qrcode-terminal')
+const Client = require('./src/client')
+const client = new Client()
 
-(async () => {
-	let session_name = "3854361464b9a2c3832c47bd39cddf54"
-	const Client = require('./client')
+client.on('qr', qr => {
+	console.log("Scan qr code")
+	qrcode.generate(qr, { small: true })
+})
 
-	let client = await Client.initialize(session_name)
+client.on('ready', () => {
+	console.log('Client is ready!')
+	let phones = ["5514996212777", "5514996216606", "5514997569008"]
+	phones.forEach(phone => client.sendMessage(phone, 'Oi , Tudo bem ? isso é um teste'))
 
-	client.event.on("qr_code", code => {
-		const qrcode = require('qrcode-terminal')
-		console.log("Scan this qrcode")
-		qrcode.generate(code, { small: true })
+})
 
-	})
+// client.on('authenticated', () => {
+// 	console.log('Authenticated')
+// })
 
-	client.event.on("sent_message", message => {
-		console.log(message)
-	})
+client.on('message_create', message => {
+	console.log(`sent message to ${message.to}`)
+})
 
-	client.event.on("connected", () => {
-		console.log("connected")
-	})
 
-	// await client.authenticate()
-	// await client.sendMessage("+5514997569008", "mensagem de teste api wpp")
-	// await client.sendMessage("+5514996766177", "teste a1212")
-})()
+client.initialize()
