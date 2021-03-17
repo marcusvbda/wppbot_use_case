@@ -1,7 +1,7 @@
 const qrcode = require('qrcode-terminal')
-const Client = require('./src/client')
+const Client = require('whatsapp_engine_js')
 // const imageToBase64 = require('image-to-base64')
-const { MessageMedia } = require('./src/structures')
+const { MessageMedia } = require('whatsapp_engine_js/src/structures')
 
 const fs = require('fs')
 const SESSION_FILE_PATH = './session.json'
@@ -28,28 +28,21 @@ const sendImageMessageBase64ImageMessage = () => {
 }
 
 const sendImageMessageImageMessage = () => {
-	// imageToBase64("./image.png").then(photo => {
-	// 	const media = new MessageMedia('image/png', photo)
-	// 	client.sendMessage("5514997569008", media, { caption: 'Here\'s your requested *media.*' })
-	// }).catch(error => console.log(error))
-
-	// const media = MessageMedia.fromFilePath('./image.png')
-	// client.sendMessage("5514996766177", media, { caption: "Bla bal bla" })
-
-	// client.sendMessage("5514996766177", "testes")
+	const media = MessageMedia.fromFilePath('./image.png')
+	client.sendMessage("5514996766177", media, { caption: "Bla bal bla" })
 }
 
 client.on('ready', () => {
 	console.log("client is ready")
 	// client.sendMessage("5514997569008@c.us", 'lorem ipsum')
 
-	sendImageMessageTextMessage()
-	// sendImageMessageImageMessage()
+	// sendImageMessageTextMessage()
+	sendImageMessageImageMessage()
 	// sendImageMessageBase64ImageMessage()
 })
 
-client.on('auth_failure', (msg) => {
-	console.log("auth failed", msg)
+client.on('auth_failure', () => {
+	console.log("auth failed")
 })
 
 client.on('authenticated', (session) => {
