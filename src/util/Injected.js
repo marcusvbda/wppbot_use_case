@@ -56,6 +56,7 @@ exports.LoadUtils = () => {
 	}
 
 	window.WWebJS.sendMessage = async (chat, content, options = {}) => {
+		console.log("SEND MENSSAGE")
 		let attOptions = {}
 		if (options.attachment) {
 			attOptions = options.sendMediaAsSticker

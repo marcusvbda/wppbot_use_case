@@ -7,7 +7,7 @@ const moduleRaid = require('./util/ModuleRaid')
 const InterfaceController = require('./util/InterfaceController')
 const { WhatsWebURL, DefaultOptions, Events } = require('./util/Constants')
 const { ExposeStore, LoadUtils } = require('./util/Injected')
-const { ClientInfo, Message, MessageMedia, Location, Contact } = require('./structures')
+const { ClientInfo, Message, MessageMedia, Location, Contact, GroupNotification } = require('./structures')
 
 class Client extends EventEmitter {
 	constructor(options = {}) {
@@ -102,19 +102,49 @@ class Client extends EventEmitter {
 
 		await page.exposeFunction('onAddMessageEvent', msg => {
 			if (!msg.isNewMsg) return
+			if (msg.type === 'gp2') {
+				const notification = new GroupNotification(this, msg)
+				if (msg.subtype === 'add' || msg.subtype === 'invite') {
+					this.emit(Events.GROUP_JOIN, notification)
+				} else if (msg.subtype === 'remove' || msg.subtype === 'leave') {
+					this.emit(Events.GROUP_LEAVE, notification)
+				} else {
+					this.emit(Events.GROUP_UPDATE, notification)
+				}
+				return
+			}
 
 			const message = new Message(this, msg)
 			this.emit(Events.MESSAGE_CREATE, message)
+
+			if (msg.id.fromMe) return
+
+			this.emit(Events.MESSAGE_RECEIVED, message)
+		})
+
+		await page.exposeFunction('onMessageMediaUploadedEvent', (msg) => {
+
+			const message = new Message(this, msg)
+
+			/**
+			 * Emitted when media has been uploaded for a message sent by the client.
+			 * @event Client#media_uploaded
+			 * @param {Message} message The message with media that was uploaded
+			 */
+			this.emit(Events.MEDIA_UPLOADED, message)
 		})
 
 		await page.evaluate(() => {
 			window.Store.Msg.on('add', (msg) => { if (msg.isNewMsg) window.onAddMessageEvent(window.WWebJS.getMessageModel(msg)) })
+			window.Store.Msg.on('change:isUnsentMedia', (msg, unsent) => { if (msg.id.fromMe && !unsent) window.onMessageMediaUploadedEvent(window.WWebJS.getMessageModel(msg)) })
 		})
 
 		this.emit(Events.READY)
 	}
 	async sendMessage(chatId, content, options = {}) {
-		chatId = `${chatId}@c.us`
+		if (chatId.indexOf("@c.u") == -1) {
+			chatId = `${chatId}@c.us`
+		}
 		let internalOptions = {
 			linkPreview: options.linkPreview === false ? undefined : true,
 			sendAudioAsVoice: options.sendAudioAsVoice,
