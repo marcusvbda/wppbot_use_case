@@ -27,32 +27,32 @@ const validateAndSendMessage = (number, cb) => {
 }
 
 const sendTextMessage = () => {
-	let number = "5514996766177"
+	let number = "5514996069869"
 	validateAndSendMessage(number, (account) => {
-		client.sendMessage(account.id, "foi deu certo")
+		client.sendMessage(account.id, "Teste mensagem de *texto comum* ❤️")
 	})
 }
 
 const sendBase64IimageMessage = () => {
-	let number = "5514996766177"
+	let number = "5514996069869"
 	validateAndSendMessage(number, (account) => {
 		imageToBase64("./assets/image.png").then(photo => {
 			const media = new MessageMedia('image/png', photo)
-			client.sendMessage(account.id, media, { caption: 'Here\'s your requested *media.*' })
+			client.sendMessage(account.id, media, { caption: 'Teste imagem *base64* 📷' })
 		}).catch(error => console.log(error))
 	})
 }
 
 const sendImageMessage = () => {
-	let number = "5514996766177"
+	let number = "5514996069869"
 	validateAndSendMessage(number, (account) => {
 		const media = MessageMedia.fromFilePath('./assets/image.png')
-		client.sendMessage(account.id, media, { caption: "Bla bal bla" })
+		client.sendMessage(account.id, media, { caption: "Teste imagem *apartir de um arquivo png* 💡" })
 	})
 }
 
 const sendSendAudioMessage = () => {
-	let number = "5514996766177"
+	let number = "5514996069869"
 	validateAndSendMessage(number, (account) => {
 		const media = MessageMedia.fromFilePath('./assets/audio.mp3')
 		client.sendMessage(account.id, media)
