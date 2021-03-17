@@ -1,5 +1,6 @@
 'use strict'
 
+const Util = require('./util/Util')
 const EventEmitter = require('events')
 const puppeteer = require('puppeteer')
 const moduleRaid = require('./util/ModuleRaid')
@@ -11,7 +12,7 @@ const { ClientInfo, Message, MessageMedia, Location, Contact } = require('./stru
 class Client extends EventEmitter {
 	constructor(options = {}) {
 		super()
-		this.options = { ...DefaultOptions, ...options }
+		this.options = Util.mergeDefault(DefaultOptions, options)
 		this.pupBrowser = null
 		this.pupPage = null
 	}

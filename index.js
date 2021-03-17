@@ -9,8 +9,8 @@ client.on('qr', qr => {
 
 client.on('ready', () => {
 	console.log('Client is ready!')
-	let phones = ["5514996212777", "5514996216606", "5514997569008"]
-	phones.forEach(phone => client.sendMessage(phone, 'Oi , Tudo bem ? isso é um teste'))
+	// let phones = ["5514996212777", "5514996216606", "5514997569008"]
+	// phones.forEach(phone => client.sendMessage(phone, 'Oi , Tudo bem ? isso é um teste'))
 
 })
 
