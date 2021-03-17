@@ -1,6 +1,6 @@
 const qrcode = require('qrcode-terminal')
 const Client = require('./src/client')
-const imageToBase64 = require('image-to-base64')
+// const imageToBase64 = require('image-to-base64')
 const { MessageMedia } = require('./src/structures')
 
 const fs = require('fs')
@@ -16,21 +16,40 @@ client.on('qr', qr => {
 	qrcode.generate(qr, { small: true })
 })
 
-const sendImageMessage = () => {
+const sendImageMessageTextMessage = () => {
+	client.sendMessage("5514996766177", "foi deu certo")
+}
+
+const sendImageMessageBase64ImageMessage = () => {
+	imageToBase64("./image.png").then(photo => {
+		const media = new MessageMedia('image/png', photo)
+		client.sendMessage("5514997569008", media, { caption: 'Here\'s your requested *media.*' })
+	}).catch(error => console.log(error))
+}
+
+const sendImageMessageImageMessage = () => {
 	// imageToBase64("./image.png").then(photo => {
 	// 	const media = new MessageMedia('image/png', photo)
 	// 	client.sendMessage("5514997569008", media, { caption: 'Here\'s your requested *media.*' })
 	// }).catch(error => console.log(error))
 
-	const media = MessageMedia.fromFilePath('./image.png')
-	client.sendMessage("5514996766177", media, { caption: "Participe da nossa live *Hoje*" })
+	// const media = MessageMedia.fromFilePath('./image.png')
+	// client.sendMessage("5514996766177", media, { caption: "Bla bal bla" })
+
+	// client.sendMessage("5514996766177", "testes")
 }
 
 client.on('ready', () => {
 	console.log("client is ready")
 	// client.sendMessage("5514997569008@c.us", 'lorem ipsum')
 
-	sendImageMessage()
+	sendImageMessageTextMessage()
+	// sendImageMessageImageMessage()
+	// sendImageMessageBase64ImageMessage()
+})
+
+client.on('auth_failure', (msg) => {
+	console.log("auth failed", msg)
 })
 
 client.on('authenticated', (session) => {

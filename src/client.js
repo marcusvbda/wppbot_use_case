@@ -46,16 +46,11 @@ class Client extends EventEmitter {
 			try {
 				await page.waitForSelector(KEEP_PHONE_CONNECTED_IMG_SELECTOR, { timeout: this.options.authTimeoutMs })
 			} catch (err) {
-				if (err.name === 'TimeoutError') {
-					this.emit(Events.AUTHENTICATION_FAILURE, 'Unable to log in. Are the session details valid?')
-					browser.close()
-					if (this.options.restartOnAuthFail) {
-						this.options.session = null
-						this.initialize()
-					}
-					return
-				}
-				throw err
+				this.emit(Events.AUTHENTICATION_FAILURE, 'Unable to log in. Are the session details valid?')
+				browser.close()
+				this.options.session = null
+				this.initialize()
+				return
 			}
 		} else {
 			const getQrCode = async () => {
@@ -122,21 +117,8 @@ class Client extends EventEmitter {
 			this.emit(Events.MESSAGE_RECEIVED, message)
 		})
 
-		await page.exposeFunction('onMessageMediaUploadedEvent', (msg) => {
-
-			const message = new Message(this, msg)
-
-			/**
-			 * Emitted when media has been uploaded for a message sent by the client.
-			 * @event Client#media_uploaded
-			 * @param {Message} message The message with media that was uploaded
-			 */
-			this.emit(Events.MEDIA_UPLOADED, message)
-		})
-
 		await page.evaluate(() => {
 			window.Store.Msg.on('add', (msg) => { if (msg.isNewMsg) window.onAddMessageEvent(window.WWebJS.getMessageModel(msg)) })
-			window.Store.Msg.on('change:isUnsentMedia', (msg, unsent) => { if (msg.id.fromMe && !unsent) window.onMessageMediaUploadedEvent(window.WWebJS.getMessageModel(msg)) })
 		})
 
 		this.emit(Events.READY)
