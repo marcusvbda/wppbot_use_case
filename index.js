@@ -11,7 +11,7 @@ if (fs.existsSync(SESSION_FILE_PATH)) {
 }
 
 const client = new Client({ puppeteer: { headless: true }, session: sessionCfg })
-
+const number = "**********"
 client.on('qr', qr => {
 	qrcode.generate(qr, { small: true })
 })
@@ -27,14 +27,12 @@ const validateAndSendMessage = (number, cb) => {
 }
 
 const sendTextMessage = () => {
-	let number = "5514996069869"
 	validateAndSendMessage(number, (account) => {
 		client.sendMessage(account.id, "Teste mensagem de *texto comum* ❤️")
 	})
 }
 
 const sendBase64IimageMessage = () => {
-	let number = "5514996069869"
 	validateAndSendMessage(number, (account) => {
 		imageToBase64("./assets/image.png").then(photo => {
 			const media = new MessageMedia('image/png', photo)
@@ -44,7 +42,6 @@ const sendBase64IimageMessage = () => {
 }
 
 const sendImageMessage = () => {
-	let number = "5514996069869"
 	validateAndSendMessage(number, (account) => {
 		const media = MessageMedia.fromFilePath('./assets/image.png')
 		client.sendMessage(account.id, media, { caption: "Teste imagem *apartir de um arquivo png* 💡" })
@@ -52,7 +49,6 @@ const sendImageMessage = () => {
 }
 
 const sendSendAudioMessage = () => {
-	let number = "5514996069869"
 	validateAndSendMessage(number, (account) => {
 		const media = MessageMedia.fromFilePath('./assets/audio.mp3')
 		client.sendMessage(account.id, media)
